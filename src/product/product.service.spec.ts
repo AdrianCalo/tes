@@ -6,30 +6,14 @@ import { Product } from './entities/product.entity';
 
 describe('ProductService', () => {
   let service: ProductService;//almacena una instacia de productService
-//agregado
- /* let controller:ProductController;
-  let productMoked:[{id:1,
-    producto:"lavadora",
-    marca:"samsung",
-    categoria:"limpieza",
-    valor:799},]
-    let serviceMock={
-      products:()=>productMoked,// funcion que retorna contenido de productMoked
-    }//objeto que simula el servicio ProductService
-    */
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      //agregado
-      //controllers:[ProductController],// se especifica el controlador a probar
-      //
+    
       providers: [ProductService],// se especifica servicio a inyetar en el controlador
-    })//sustituimos el provedor real con una version simulada(mock)
-    //.overrideProvider(serviceMock)
-    //.useValue(serviceMock)
+    })
     .compile();
-    //obtenemos instancias del controlador y el servicio del modulo de prueba
-    //controller = module.get<ProductController>(ProductController);
-    //
+    //obtenemos instancias del servicio del modulo de prueba
     service = module.get<ProductService>(ProductService);
   });
 
@@ -38,181 +22,188 @@ describe('ProductService', () => {
   });
 
   //test findAll
-  //aca por logica me esta dando dos resultados. me esta devolviendo
-  //todos los productos y ademas me esta retornando un array de productos
-  //1
-  it('should retunr all products',()=>{
-    const allProducts: Product[]=[
-      {id:1,
-        producto:"lavadora",
-        marca:"samsung",
-        categoria:"limpieza",
-        valor:799},
-      {
-        id:2,
-        producto:"TV",
-        marca:"LG",
-        categoria:"entretenimeinto",
-        valor:640
-      },];
-      const findAllSpy=jest.spyOn(service,'findAll').mockReturnValue(allProducts);
-      const result= service.findAll();
-      expect(result).toEqual(allProducts)
-      findAllSpy.mockRestore();//restaura el espia para dejar el servicio en su estado original
-  })
-  //2
-  it('should retunr an Array not empty',()=>{
-    const products:Product[]=[
-      {id:1,
-        producto:"lavadora",
-        marca:"samsung",
-        categoria:"limpieza",
-        valor:799},
-      {
-        id:2,
-        producto:"TV",
-        marca:"LG",
-        categoria:"entretenimeinto",
-        valor:640
-      },
-    ];
-    const findAllSpy=jest.spyOn(service,'findAll').mockReturnValue(products)
-    const result= service.findAll();
-    expect(findAllSpy).toHaveBeenCalled()//espero que sea llamada
-    expect(result).toBeDefined()//espero que la respuesta no sea nula
-    expect(products.length).toBeGreaterThan(0);
-  })
-  //toBeGreaterThan compara que un valor sea mas grande que otro
- 
-  //3
-  it('should return an empty array when products arent available',()=>{
-    //suponemos que products esta vacio al inicio
-    const products= [];//iniciamos products vacio
-    const result= service.findAll();//llamamos al metodo fillAll del servicio
-    expect(result).toEqual([]);//comprobamos si el resultado es una array vacio
-  })
- 
+  describe('findAll',()=>{
+
+    //aca por logica me esta dando dos resultados. me esta devolviendo
+    //todos los productos y ademas me esta retornando un array de productos
+    //1
+    it('should retunr all products',()=>{
+      const allProducts: Product[]=[
+        {id:1,
+          producto:"lavadora",
+          marca:"samsung",
+          categoria:"limpieza",
+          valor:799},
+          {
+            id:2,
+            producto:"TV",
+            marca:"LG",
+            categoria:"entretenimeinto",
+            valor:640
+          },];
+          const findAllSpy=jest.spyOn(service,'findAll').mockReturnValue(allProducts);
+          const result= service.findAll();
+          expect(result).toEqual(allProducts)
+          findAllSpy.mockRestore();//restaura el espia para dejar el servicio en su estado original
+        })
+        //2
+        it('should retunr an Array not empty',()=>{
+          const products:Product[]=[
+            {id:1,
+              producto:"lavadora",
+              marca:"samsung",
+              categoria:"limpieza",
+              valor:799},
+              {
+                id:2,
+                producto:"TV",
+                marca:"LG",
+                categoria:"entretenimeinto",
+                valor:640
+              },
+            ];
+            const findAllSpy=jest.spyOn(service,'findAll').mockReturnValue(products)
+            const result= service.findAll();
+            expect(findAllSpy).toHaveBeenCalled()//espero que sea llamada
+            expect(result).toBeDefined()//espero que la respuesta no sea nula
+            expect(products.length).toBeGreaterThan(0);
+          })
+          //toBeGreaterThan compara que un valor sea mas grande que otro
+          
+          //3
+          it('should return an empty array when products arent available',()=>{
+            //suponemos que products esta vacio al inicio
+            const products= [];//iniciamos products vacio
+            const result= service.findAll();//llamamos al metodo fillAll del servicio
+            expect(result).toEqual([]);//comprobamos si el resultado es una array vacio
+          })
+        });
+          
   /**************************************************************************** */
 
   //test findOne
-  //1
-  it('should return an product by id',()=>{
-    const IdSolicited=1;//simulamos el id a solicitar
-    const singleProduct={//mock de un producto a pedir
-      id:1,
-      producto:"lavadora",
-      marca:"samsung",
-      categoria:"limpieza",
-      valor:799
-    };
-    const findOneSpy=jest.spyOn(service,'findOne').mockReturnValue(singleProduct);
-    const result= service.findOne(IdSolicited);
-    expect(findOneSpy).toHaveBeenCalledWith(IdSolicited);
-    expect(result).toEqual(singleProduct);
-  })
-  //2
-  it('should return UNDEFINED for an element NOT exists ID',()=>{
-    const notExistId= 5;
-    const products:Product[]=[
-      {id:1,
+  describe('findOne',()=>{
+
+    //1
+    it('should return an product by id',()=>{
+      const IdSolicited=1;//simulamos el id a solicitar
+      const singleProduct={//mock de un producto a pedir
+        id:1,
         producto:"lavadora",
         marca:"samsung",
         categoria:"limpieza",
-        valor:799},
-      {
-        id:2,
-        producto:"TV",
-        marca:"LG",
-        categoria:"entretenimeinto",
-        valor:640
-      },
-    ];
-    //creamos una instancia de la clase productService
-    const service= new ProductService();
-    service['products']=products//modifica la propiedad privada products
-
-    const result= service.findOne(notExistId);
-    expect(result).toBeUndefined()
-  })
-  
+        valor:799
+      };
+      const findOneSpy=jest.spyOn(service,'findOne').mockReturnValue(singleProduct);
+      const result= service.findOne(IdSolicited);
+      expect(findOneSpy).toHaveBeenCalledWith(IdSolicited);
+      expect(result).toEqual(singleProduct);
+    })
+    //2
+    it('should return UNDEFINED for an element NOT exists ID',()=>{
+      const notExistId= 5;
+      const products:Product[]=[
+        {id:1,
+          producto:"lavadora",
+          marca:"samsung",
+          categoria:"limpieza",
+          valor:799},
+          {
+            id:2,
+            producto:"TV",
+            marca:"LG",
+            categoria:"entretenimeinto",
+            valor:640
+          },
+        ];
+        //creamos una instancia de la clase productService
+        //const service= new ProductService();
+        //service['products']=products//modifica la propiedad privada products
+        const result= service.findOne(notExistId);
+        expect(result).toBeUndefined()
+      })
+    });
+      
   /**************************************************************************** */
 
   //test create //param newElemet
-  //1
-  it('should create an new object type Product inside the array',()=>{
-    const newElemet={
-      id:1,
+  describe('crete',()=>{
+
+    //1
+    it('should create an new object type Product inside the array',()=>{
+      const newElemet={
+        id:1,
         producto:"lavadora",
         marca:"samsung",
         categoria:"limpieza",
         valor:799
-    };
-    const createSpyOn=jest.spyOn(service,'create').mockReturnValue(newElemet);
-    const result=service.create(newElemet);
-    expect(createSpyOn).toHaveBeenCalledWith(newElemet);
-    expect(result).toEqual(newElemet);
-  })
-  //2
-  it('should increase the number of element',()=>{
-    //const inicialProducts= service.findAll();//inicialProducts es igual a la cantidad de elementos que trae fillAll()
-    const newElemet={
-      id:1,
+      };
+      const createSpyOn=jest.spyOn(service,'create').mockReturnValue(newElemet);
+      const result=service.create(newElemet);
+      expect(createSpyOn).toHaveBeenCalledWith(newElemet);
+      expect(result).toEqual(newElemet);
+    })
+    //2
+    it('should increase the number of element',()=>{
+      //const inicialProducts= service.findAll();//inicialProducts es igual a la cantidad de elementos que trae fillAll()
+      const newElemet={
+        id:1,
         producto:"lavadora",
         marca:"samsung",
         categoria:"limpieza",
         valor:799
-    };
-    const createdProduct= service.create(newElemet);//creamos un nuevo elemto llamando al metodo del service create
-    const finalProducts= service.findAll();//obtenemos la lista de elementos luego de crear un nuevo elemento
-    //experamos que la cantidad de productos luego de crear un elemento sea la misma
-    //expect(finalProducts.length).toBe(inicialProducts.length+1);NO PASA
-    //verificamos si el producto creado esta en el array final
-    expect(finalProducts).toContainEqual(createdProduct);
-  })
+      };
+      const createdProduct= service.create(newElemet);//creamos un nuevo elemto llamando al metodo del service create
+      const finalProducts= service.findAll();//obtenemos la lista de elementos luego de crear un nuevo elemento
+      //experamos que la cantidad de productos luego de crear un elemento sea la misma
+      //expect(finalProducts.length).toBe(inicialProducts.length+1);NO PASA
+      //verificamos si el producto creado esta en el array final
+      expect(finalProducts).toContainEqual(createdProduct);
+    })
+  });
 
   /**************************************************************************** */
   //test update
-  //1
-  it('should refresh the product when the user use update method',()=>{
-    const oldElementId= 1 ;
-    const newElemet={
+  describe('update',()=>{
+
+    //1
+    it('should refresh the product when the user use update method',()=>{
+      const oldElementId= 1 ;
+      const newElemet={
       id:1,
         producto:"TV",
         marca:"LG",
         categoria:"entretenimeinto",
         valor:640
-    };
-    const UpdateSpyOn=jest.spyOn(service,'update').mockReturnValue(newElemet);
-    const result=service.update(oldElementId,newElemet);
-    expect(UpdateSpyOn).toHaveBeenCalledWith(oldElementId,newElemet);
-    expect(result).toEqual(newElemet);
-  })
-  //2
-  it('should return Null if ID not exist',()=>{
-    const notExistId=3;
-    const updateProduct={
-      id:notExistId,
+      };
+      const UpdateSpyOn=jest.spyOn(service,'update').mockReturnValue(newElemet);
+      const result=service.update(oldElementId,newElemet);
+      expect(UpdateSpyOn).toHaveBeenCalledWith(oldElementId,newElemet);
+      expect(result).toEqual(newElemet);
+    })
+    //2
+    it('should return Null if ID not exist',()=>{
+      const notExistId=3;
+      const updateProduct={
+        id:notExistId,
         producto:"TV",
         marca:"LG",
         categoria:"entretenimeinto",
         valor:640
-    };
-    const updateResult= service.update(notExistId,updateProduct);
-    expect(updateResult).toBeNull;
-  })
+      };
+      const updateResult= service.update(notExistId,updateProduct);
+      expect(updateResult).toBeNull;
+    })
+  });
 
   /**************************************************************************** */
   //test delete
-  //1
-  it('should delete a product selected by id',()=>{
-    const deleteID= 1;
-    /*const product={
-      id:1,
-        producto:"TV",
-        marca:"LG",
-        categoria:"entretenimeinto",
-        valor:640
-    };*/
+  describe('delete',()=>{
+
+    //1
+    it('should delete a product selected by id',()=>{
+      const deleteID= 1;
+    
     const removeIdSpy= jest.spyOn(service,'remove').mockReturnValue(undefined);
     const result= service.remove(deleteID);
     expect(removeIdSpy).toHaveBeenCalledWith(deleteID);
@@ -226,5 +217,6 @@ describe('ProductService', () => {
     expect(removeNegativeIdSpy).toHaveBeenCalledWith(removeNegativeId);
     expect(resultNegativeId).toBeNull();
   })
-
+});
+  
 });
